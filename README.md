@@ -64,6 +64,7 @@ echo quit \
 ## Default Caching
 
 You can edit this all in `/usr/local/squid/etc/squid.conf`:
+(Created for you on first run if you don't provide one):
 
 ```conf
 cache_dir ufs /usr/local/squid/cache 20000 16 256 # 20GB
