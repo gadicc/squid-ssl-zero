@@ -4,10 +4,11 @@ PREFIX=/usr/local/squid
 mkdir -p $PREFIX
 cd $PREFIX
 
-if [ ! -d "$PREFIX/etc" ]; then
-  mkdir etc
+if [ ! -f "$PREFIX/etc/squid.conf" ]; then
+  mkdir -p etc
   cp /etc/squid/squid.conf etc
   sed -i 's/^http_port/# http_port/' etc/squid.conf
+  sed -i 's/^refresh_pattern \./# refresh_pattern ./' etc/squid.conf
   cat /tmp/squid-extra.conf >> etc/squid.conf
 fi
 

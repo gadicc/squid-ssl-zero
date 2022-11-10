@@ -44,19 +44,36 @@ ENV https_proxy=${http_proxy}
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Option 1: Retrieve CA cert via openssl (usually pre-installed)
-RUN echo quit \
-  | openssl s_client -proxy $(echo ${https_proxy} | cut -b 8-) -servername google.com -connect google.com:443 -showcerts \
-  | sed 'H;1h;$!d;x; s/^.*\(-----BEGIN CERTIFICATE-----.*-----END CERTIFICATE-----\)\n---\nServer certificate.*$/\1/' \
-  > /usr/local/share/ca-certificates/squid-self-signed.crt
-
-# Option 2: Retrieve CA cert via http (curl, wget, etc)
-RUN curl http://172.17.0.1:3129/squid-self-signed.crt |
-  > /usr/local/share/ca-certificates/squid-self-signed.crt
-
+# Recommended method.  See below for alternatives.
+ADD http://172.17.0.1:3129/squid-self-signed.crt /usr/local/share/ca-certificates/squid-self-signed.crt
 RUN update-ca-certificates
 
 # Useful for Python / Conda
 ENV REQUESTS_CA_BUNDLE=/usr/local/share/ca-certificates/squid-self-signed.crt
 ```
 
+**Alternative method to retrieve the CA cert** (without the HTTP server)
+
+```bash
+echo quit \
+  | openssl s_client -proxy $(echo ${https_proxy} | cut -b 8-) -servername google.com -connect google.com:443 -showcerts \
+  | sed 'H;1h;$!d;x; s/^.*\(-----BEGIN CERTIFICATE-----.*-----END CERTIFICATE-----\)\n---\nServer certificate.*$/\1/' \
+  > /usr/local/share/ca-certificates/squid-self-signed.crt
+```
+
+## Default Caching
+
+You can edit this all in `/usr/local/squid/etc/squid.conf`:
+
+```conf
+cache_dir ufs /usr/local/squid/cache 20000 16 256 # 20GB
+maximum_object_size 20 GB
+
+# REFRESH_PATTERN
+# You can define these by regex, for all options see:
+# http://www.squid-cache.org/Doc/config/refresh_pattern/
+# Default:
+refresh_pattern .		0	20%	4320
+# SUPER agressive (breaks HTTP standard but can be very useful)
+# refresh_pattern . 60 50% 14400 store-stale override-expire ignore-no-cache ignore-no-store ignore-private
+```
