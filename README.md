@@ -80,5 +80,5 @@ maximum_object_size 20 GB
 # Default:
 refresh_pattern .		0	20%	4320
 # SUPER agressive (breaks HTTP standard but can be very useful)
-# refresh_pattern . 60 50% 14400 store-stale override-expire ignore-no-cache ignore-no-store ignore-private
+# refresh_pattern . 52034400 50% 52034400 override-expire override-lastmod reload-into-ims ignore-reload ignore-no-store ignore-private refresh-ims store-stale
 ```
