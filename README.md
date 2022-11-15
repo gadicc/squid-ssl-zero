@@ -12,6 +12,7 @@ Copyright (c) 2022 by Gadi Cohen <dragon@wastelands.net>.  MIT Licensed.
   * squid.conf & self-signed CA cert created if missing.
   * Editable persistant volume for cache, logs, etc.
   * Mini-httpd as additional way to retrieve CA cert
+  * Monitors `etc` directory and reloads on write events.
 
 Note: SSL requests will be intercepted via self-signed certificates
 using the same name.  For this to work, you need to add the CA cert
@@ -27,7 +28,10 @@ $ docker run -d -p 3128:3128 -p 3129:80 \
 ```
 
 All necessary files will be created on first run.  You can edit them
-between runs.  You can also add
+between runs, and during runs (the write will be detected and squid
+will be reloaded).
+
+You can also add
 `-v /usr/local/squid-www:/var/www/localhost/htdocs`
 if you want to add any extra files to be available via http on port 3129.
 
