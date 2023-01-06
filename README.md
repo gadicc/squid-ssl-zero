@@ -82,3 +82,23 @@ refresh_pattern .		0	20%	4320
 # SUPER agressive (breaks HTTP standard but can be very useful)
 # refresh_pattern . 52034400 50% 52034400 override-expire override-lastmod reload-into-ims ignore-reload ignore-no-store ignore-private refresh-ims store-stale
 ```
+
+## storeid_file_rewrite
+
+Useful when many different URLs point to the same resource (possibly
+as a result of an included authentication token in the URL query
+parameters).
+
+See the [man page](https://manpages.debian.org/testing/squid/storeid_file_rewrite.8.en.html) and the example
+[storeid_file_rewrite.txt](./storeid_file_rewrite.txt).
+The file is automatically reloaded on save.
+
+Testing:
+
+```bash
+$ docker exec -it <containerId> /bin/sh
+$ cd /usr/lib/squid
+$ URL='https://cdn-lfs.huggingface.co/repos/24/cb/24cbc2f7542236eb613b4f16b6802d7c2bef443e86cf9d076719733866e66c3a/f2a06cf32cf585d03b55fef302142a5321b761ec440113925f64f4ceaffc7730?some-irrelevent-query'
+$ echo $URL | ./storeid_file_rewrite /usr/local/squid/etc/storeid_file_rewrite.txt
+OK store-id=https://cdn-lfs.huggingface.co/repos/24/cb/24cbc2f7542236eb613b4f16b6802d7c2bef443e86cf9d076719733866e66c3a/f2a06cf32cf585d03b55fef302142a5321b761ec440113925f64f4ceaffc7730
+```

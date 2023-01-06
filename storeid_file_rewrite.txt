@@ -1,0 +1,1 @@
+^(https:\/\/cdn-lfs.huggingface.co\/repos\/[0-9A-Fa-f]{2}\/[0-9A-Fa-f]{2}\/[0-9A-Fa-f]{64}\/[0-9A-Fa-f]{64})\??.*$	$1
